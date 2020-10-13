@@ -26,7 +26,7 @@ def create_app():
     from project.models import db, Station
     db.init_app(app)
 
-    @app.route('/')
+    @app.route('/app/')
     def main():
         response_object = {
             'status': 'success',
