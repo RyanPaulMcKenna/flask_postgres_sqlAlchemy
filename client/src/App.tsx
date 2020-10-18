@@ -28,6 +28,7 @@ export class App extends React.Component<IAppProps, IAppState> {
   public render() {
     return (
       <div>
+        <h1>Hello</h1>
         <h1>{this.state.data}</h1>
       </div>
     );

@@ -2,61 +2,65 @@ version: '3.7'
 
 services:
     client:
-        build:
-          context: ./client
-          dockerfile: Dockerfile
-        volumes:
-          - './client:/usr/src/app'
-          - '/usr/src/app/node_modules'
-        networks:
-            my-network:
-                aliases:
-                    - client
-        stdin_open: true
-        ports:
-          - 3000
-        environment:
-          - NODE_ENV=development
-          - REACT_APP_SERVICE_URL=http://localhost:8080
-          - CHOKIDAR_USEPOLLING=true
-        depends_on:
-          - app
+      build:
+        context: ./client
+        dockerfile: Dockerfile
+      volumes:
+        - './client:/usr/src/app'
+        - '/usr/src/app/node_modules'
+      networks:
+        my-network:
+          aliases:
+            - client
+      stdin_open: true
+      ports:
+        - 3000
+      environment:
+        - NODE_ENV=development
+        - REACT_APP_SERVICE_URL=http://localhost:8080
+        - CHOKIDAR_USEPOLLING=true
+      depends_on:
+        - app
     nginx:
-        build:
-          context: ./nginx
-          dockerfile: Dockerfile
-        restart: unless-stopped
-        ports:
-          - 8080:8080
-        networks:
+      build:
+        context: ./nginx
+        dockerfile: Dockerfile
+      restart: unless-stopped
+      ports:
+        - 8080:8080
+      networks:
         - my-network
-        depends_on:
-          - app
-          - client
+      depends_on:
+        - app
+        - client
     app:
-        build: 
-            context: ./app
-            dockerfile: Dockerfile
-        volumes:
-            - './app:/usr/src/app'
-        networks:
-            my-network:
-                aliases:
-                    - app
-        environment: 
-            - FLASK_CONFIG=development
-            - FLASK_ENV=development
-            - APP_SETTINGS=project.config.BaseConfig
-            - SECRET_KEY=ZQbn05PDeA7v11
-        ports:
-            - 5000
-        depends_on:
-            - db
+      build: 
+        context: ./app
+        dockerfile: Dockerfile
+      volumes:
+        - './app:/usr/src/app'
+      networks:
+        my-network:
+          aliases:
+            - app
+      environment: 
+        - FLASK_CONFIG=development
+        - FLASK_ENV=development
+        - APP_SETTINGS=project.config.BaseConfig
+        - SECRET_KEY=ZQbn05PDeA7v11
+      ports:
+        - 5000:5000
+      depends_on:
+        - db
     db:
-        image: postgres:10
-        env_file: .env
-        ports:
-            - 5432
+      image: postgres:10
+      networks:
+        my-network:
+          aliases:
+            - testdb
+      env_file: .env
+      ports:
+        - 5432
 networks:
-    my-network:
-        driver: bridge
+  my-network:
+    driver: bridge

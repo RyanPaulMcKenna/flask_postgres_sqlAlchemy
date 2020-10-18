@@ -9,24 +9,28 @@ def create_app():
 
     DBUSER = 'marco'
     DBPASS = 'foobarbaz'
-    DBHOST = 'db'
+    DBHOST = 'testdb'
     DBPORT = '5432'
     DBNAME = 'mydatabase'
 
     app.config['SQLALCHEMY_DATABASE_URI'] = \
-    'postgresql+psycopg2://{user}:{passwd}@{host}:{port}/{db}'.format(
-        user=DBUSER,
-        passwd=DBPASS,
-        host=DBHOST,
-        port=DBPORT,
-        db=DBNAME)
+        'postgresql://{user}:{passwd}@{host}:{port}/{db}'.format(
+            user=DBUSER,
+            passwd=DBPASS,
+            host=DBHOST,
+            port=DBPORT,
+            db=DBNAME)
+    
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.secret_key = 'ZQbn05PDeA7v11'
+
     env_flask_config_name = os.getenv('APP_SETTINGS')
     app.config.from_object(env_flask_config_name)
 
     from project.models import db, Station
     db.init_app(app)
 
-    @app.route('/app/')
+    @app.route('/app')
     def main():
         response_object = {
             'status': 'success',
