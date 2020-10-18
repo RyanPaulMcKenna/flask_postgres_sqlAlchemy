@@ -1,0 +1,3 @@
+migrations/
+project/__pycache__
+project/models/__pycache__
