@@ -26,9 +26,15 @@ def create_app():
 
     env_flask_config_name = os.getenv('APP_SETTINGS')
     app.config.from_object(env_flask_config_name)
-
+    
+    from . import extensions
+    extensions.init_app(app)
+    
     from project.models import db, Station
     db.init_app(app)
+    
+    from . import modules
+    modules.initiate_app(app)
 
     @app.route('/app')
     def main():
