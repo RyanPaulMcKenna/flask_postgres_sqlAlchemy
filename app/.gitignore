@@ -1,3 +1,8 @@
 migrations/
 project/__pycache__
 project/models/__pycache__
+project/modules/__pycache__
+project/extensions/__pycache__
+project/modules/users/__pycache__
+project/modules/auth/__pycache__
+/__pycache__

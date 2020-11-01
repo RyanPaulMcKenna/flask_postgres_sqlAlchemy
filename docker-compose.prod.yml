@@ -44,15 +44,13 @@ services:
           aliases:
             - app
       environment: 
-        - FLASK_CONFIG=development
-        - FLASK_ENV=development
+        - FLASK_CONFIG=production
+        - FLASK_ENV=production
         - DATABASE_URL=postgresql://marco:foobarbaz@testdb:5432/mydatabase
-        - APP_SETTINGS=project.config.DevelopmentConfig
+        - APP_SETTINGS=project.config.ProductionConfig
         - SECRET_KEY=ZQbn05PDeA7v11
       ports:
-        - 5000:5000 # app port
-        - 5001:5001 # app (debug) port
-        - 3000:3000 # remote debugger attach port
+        - 5000
       depends_on:
         - db
     db:

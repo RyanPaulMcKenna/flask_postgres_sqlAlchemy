@@ -1,7 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy
+from project.extensions import db
 import datetime
 
-db = SQLAlchemy()
+
 
 # define your models classes hereafter
 class BaseModel(db.Model):

@@ -14,14 +14,14 @@ api = Api(users_blueprint)
 
 class Users(Resource):
 
-    method_decorators = {'get': [authenticate_restful]}
-
-    def get(self, user, token: str):
+    @authenticate_restful
+    def get(self, token: str):
         """Get single user details"""
         response_object = {'status': 'fail', 'message': 'User does not exist'}
         log.debug(token)
-        log.debug(user)
         try:
+            user = UsersModel.query.filter_by(id=token).first()
+            log.debug(user)
             if not user:
                 return response_object, HTTPStatus.NOT_FOUND
             else:
@@ -38,13 +38,9 @@ class Users(Resource):
 
 class UsersList(Resource):
 
-    method_decorators = {
-        'get': [authenticate_restful],
-        'post': [authenticate_restful],
-        'put': [authenticate_restful]
-    }
 
-    def get(self):
+    @authenticate_restful
+    def get(self, resp):
         """Get all users"""
         response_object = {
             'status': 'success',
@@ -52,10 +48,11 @@ class UsersList(Resource):
         }
         return response_object, HTTPStatus.OK
 
-    def post(self, user):
+    @authenticate_restful
+    def post(self, resp):
         post_data = request.get_json()
         response_object = {'status': 'fail', 'message': 'Invalid payload'}
-        if not is_admin(resp):
+        if not is_admin(resp.id):
             response_object['message'] = \
                 "You do not have permission to do that."
             return response_object, HTTPStatus.UNAUTHORIZED
@@ -73,6 +70,7 @@ class UsersList(Resource):
         except Exception as e:
             log.error(e)
 
+    @authenticate_restful
     def put(self, user):
         post_data = request.get_json()
         response_object = {'status': 'fail', 'message': 'Invalid payload'}
@@ -95,5 +93,5 @@ class UsersList(Resource):
             log.error(e)
 
 
-api.add_resource(Users, '/api/v1/users/<token>')
-api.add_resource(UsersList, '/api/v1/users')
+api.add_resource(Users, '/app/v1/users/<token>')
+api.add_resource(UsersList, '/app/v1/users')
