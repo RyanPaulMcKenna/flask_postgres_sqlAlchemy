@@ -6,7 +6,7 @@
             "type": "python",
             "request": "launch",
             "stopOnEntry": false,
-            "pythonPath": "${command:python.interpreterPath}",
+            "python": "${command:python.interpreterPath}",
             "module": "flask",
             "cwd": "${workspaceFolder}",
             "env": {"FLASK_APP":"manage.py"}, // you can add debug-specific envvars here

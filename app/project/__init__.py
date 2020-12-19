@@ -18,13 +18,8 @@ def create_app():
     from . import extensions
     extensions.init_app(app)
     
-<<<<<<< HEAD
-    from project.models import db, Station
-    db.init_app(app)
-=======
     from project.models import Station
->>>>>>> 39a2d1b... rework api and add live in container debug of api
-    
+
     from . import modules
     modules.initiate_app(app)
 
