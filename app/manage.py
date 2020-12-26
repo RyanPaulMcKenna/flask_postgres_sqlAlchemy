@@ -1,16 +1,16 @@
-from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
+from flask_script import Manager
 from project import create_app
 from project.extensions import db
 from project.modules.users.models import Users
-import time
 
-app = create_app()
+app = create_app('APP_SETTINGS')
 
 manager = Manager(app)
 migrate = Migrate(app, db)
 
 manager.add_command('db', MigrateCommand)
+
 
 @manager.command
 def recreate_db():
@@ -18,13 +18,15 @@ def recreate_db():
     db.create_all()
     db.session.commit()
 
+
 @manager.command
 def seed_db():
     """Seeds the database."""
     db.session.add(
         Users(username='admin',
+              password='verysecurepassword',
               email='admin@gmail.com',
-              password='verysecurepassword'))
+              admin=True))
     db.session.commit()
 
 

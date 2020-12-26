@@ -1,9 +1,11 @@
 import datetime
-import jwt
 import logging
-from project.extensions import db, bcrypt
-from sqlalchemy_utils import Timestamp
+
+import jwt
 from flask import current_app
+from sqlalchemy_utils import Timestamp
+
+from project.extensions import bcrypt, db
 
 log = logging.getLogger(__name__)
 

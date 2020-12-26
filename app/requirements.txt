@@ -13,3 +13,6 @@ SQLAlchemy-Utils==0.36.3
 flask-bcrypt==0.7.1
 flask-cors==3.0.8
 ptvsd==4.2.10
+pytest==6.2.0
+coverage==5.3.1
+flake8==3.8.4

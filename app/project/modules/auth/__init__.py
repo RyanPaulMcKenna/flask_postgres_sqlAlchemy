@@ -1,10 +1,12 @@
 import logging
-from flask import Blueprint, request, jsonify
 from http import HTTPStatus
+
+from flask import Blueprint, jsonify, request
 from sqlalchemy import exc, or_
-from project.extensions import db, bcrypt
-from project.modules.utils import authenticate
+
+from project.extensions import bcrypt, db
 from project.modules.users.models import Users
+from project.modules.utils import authenticate
 
 log = logging.getLogger(__name__)
 api = Blueprint('auth', __name__)

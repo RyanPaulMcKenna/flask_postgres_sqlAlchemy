@@ -1,23 +1,24 @@
 import os
-from flask import Flask
 from http import HTTPStatus
+
+from flask import Flask
 from flask_restx import Api
 from werkzeug.middleware.proxy_fix import ProxyFix
 
-def create_app():
+
+def create_app(config):
+    assert(config == 'APP_SETTINGS' or config == 'APP_TEST_SETTINGS')
     app = Flask(__name__)
     app.wsgi_app = ProxyFix(app.wsgi_app)
-    
+
     api = Api(app)
 
-    app.config['DEBUG'] = True
-
-    env_flask_config_name = os.getenv('APP_SETTINGS')
+    env_flask_config_name = os.getenv(config)
     app.config.from_object(env_flask_config_name)
-    
+
     from . import extensions
     extensions.init_app(app)
-    
+
     from project.models import Station
 
     from . import modules

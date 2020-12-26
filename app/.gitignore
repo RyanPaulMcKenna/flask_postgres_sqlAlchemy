@@ -5,4 +5,8 @@ project/modules/__pycache__
 project/extensions/__pycache__
 project/modules/users/__pycache__
 project/modules/auth/__pycache__
+tests/__pycache__
 /__pycache__
+htmlcov/
+.coverage
+.pytest_cache/

@@ -9,6 +9,7 @@ WORKDIR /usr/src/app
 
 RUN export FLASK_APP=app.py
 RUN export PYTHONPATH=$PYTHONPATH:/usr/src/app
+ENV PYTHONPATH /usr/src/app
 
 RUN pip install --upgrade pip
 

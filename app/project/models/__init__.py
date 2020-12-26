@@ -1,7 +1,8 @@
-from flask_sqlalchemy import SQLAlchemy
-from project.extensions import db
 import datetime
 
+from flask_sqlalchemy import SQLAlchemy
+
+from project.extensions import db
 
 
 # define your models classes hereafter
@@ -24,7 +25,8 @@ class BaseModel(db.Model):
                 Define a base way to jsonify models, dealing with datetime objects
         """
         return {
-            column: value if not isinstance(value, datetime.date) else value.strftime('%Y-%m-%d')
+            column: value if not isinstance(
+                value, datetime.date) else value.strftime('%Y-%m-%d')
             for column, value in self._to_dict().items()
         }
 
@@ -33,6 +35,6 @@ class Station(BaseModel, db.Model):
     """Model for the stations table"""
     __tablename__ = 'stations'
 
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key=True)
     lat = db.Column(db.Float)
     lng = db.Column(db.Float)

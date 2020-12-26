@@ -8,13 +8,14 @@ Extensions provide access to common resources of the application.
 Please, put new extension instantiations and initializations here.
 """
 
-from flask_sqlalchemy import SQLAlchemy
-from flask_marshmallow import Marshmallow
-from flask_cors import CORS
-from flask_bcrypt import Bcrypt
-from .logging import Logging
 from logging.config import dictConfig
 
+from flask_bcrypt import Bcrypt
+from flask_cors import CORS
+from flask_marshmallow import Marshmallow
+from flask_sqlalchemy import SQLAlchemy
+
+from .logging import Logging
 
 logging = Logging()
 
