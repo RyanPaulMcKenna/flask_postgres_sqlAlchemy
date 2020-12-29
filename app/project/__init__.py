@@ -5,15 +5,19 @@ from flask import Flask
 from flask_restx import Api
 from werkzeug.middleware.proxy_fix import ProxyFix
 
-
-def create_app(config):
-    assert(config == 'APP_SETTINGS' or config == 'APP_TEST_SETTINGS')
+def create_app(config=None):
+    config_name = ''
+    if config == None:
+       config_name = 'APP_SETTINGS'
+    else:
+        config_name = 'APP_TEST_SETTINGS'
+    
     app = Flask(__name__)
     app.wsgi_app = ProxyFix(app.wsgi_app)
 
     api = Api(app)
 
-    env_flask_config_name = os.getenv(config)
+    env_flask_config_name = os.getenv(config_name)
     app.config.from_object(env_flask_config_name)
 
     from . import extensions

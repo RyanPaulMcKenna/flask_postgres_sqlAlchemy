@@ -4,7 +4,7 @@ from project import create_app
 from project.extensions import db
 from project.modules.users.models import Users
 
-app = create_app('APP_SETTINGS')
+app = create_app()
 
 manager = Manager(app)
 migrate = Migrate(app, db)

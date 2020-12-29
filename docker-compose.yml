@@ -46,6 +46,7 @@ services:
       environment: 
         - FLASK_CONFIG=development
         - FLASK_ENV=development
+        - DATABASE_MAIN_URL=postgresql://marco:foobarbaz@testdb:5432
         - DATABASE_URL=postgresql://marco:foobarbaz@testdb:5432/mydatabase
         - DATABASE_TEST_URL=postgresql://marco:foobarbaz@testdb:5432/test_db
         - APP_SETTINGS=project.config.DevelopmentConfig
