@@ -50,7 +50,8 @@ def login_user():
                     'message': 'Successfully logged in',
                     'auth_token': auth_token.decode()
                 }
-                return jsonify(response_object), HTTPStatus.OK
+                # return jsonify(response_object), HTTPStatus.OK
+                return redirect(url_for('check_token')), HTTPStatus.OK
         else:
             response_object['message'] = 'User does not exist'
             return jsonify(response_object), HTTPStatus.NOT_FOUND
@@ -81,6 +82,18 @@ def register_user():
     email = post_data.get('email')
     password = post_data.get('password')
 
+    if username == "":
+        response_object['message'] = "Username is required."
+        return jsonify(response_object), 412
+    if password == "":
+        response_object['message'] = "Password is required."
+        return jsonify(response_object), 412
+    if email == "":
+        response_object['message'] = "Email is required."
+        return jsonify(response_object), 412
+
+
+
     try:
         user = Users.query.filter(
             or_(Users.username == username, Users.email == email)).first()
@@ -92,12 +105,12 @@ def register_user():
 
             # generate auth token
             auth_token = new_user.encode_auth_token(new_user.id)
-            response_object['status'] = 'success'
+            response_object['status'] = 'success.'
             response_object['message'] = 'Successfully registered.'
             response_object['auth_token'] = auth_token.decode()
             return jsonify(response_object), 200
         else:
-            response_object['message'] = 'Sorry. That user already exists.'
+            response_object['message'] = 'Already registered.'
             return jsonify(response_object), 400
     except (exc.IntegrityError, ValueError):
         db.session.rollback()

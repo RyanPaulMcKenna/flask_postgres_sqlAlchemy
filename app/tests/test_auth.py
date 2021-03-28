@@ -3,50 +3,46 @@ from flask import g
 from flask import session
 
 from project.extensions import db
-
+from project.modules.users.models import Users
 
 def test_register(client, app):
     # test that successful registration redirects to the login page
-    response = client.post("/app/v1/auth/register", data={"username": "ryan","email":"ryan.test@gmail.com", "password": "bestPasswordEver"})
-    # assert "http://localhost/auth/v1/login" == response.headers["Location"]
-
-    # test that the user was inserted into the database
+    response = client.post("/app/v1/auth/register", json={"username": "ryan","email":"ryan.test@gmail.com", "password": "bestPasswordEver"})
+    
+    # assert "http://localhost/app/v1/auth/login" == response.headers["Location"]
     with app.app_context():
-        assert (
-            db.session.execute("select * from user where email = 'ryan.test@gmail.com'").fetchone()
-            is not None
-        )
+        from project.modules.users.models import Users
+        user = Users.query.filter_by(username="ryan").first()
+        # test that the user was inserted into the database
+        assert user.username == "ryan"
 
-
-# @pytest.mark.parametrize(
-#     ("username", "password", "message"),
-#     (
-#         ("", "", b"Username is required."),
-#         ("a", "", b"Password is required."),
-#         ("test", "test", b"already registered"),
-#     ),
-# )
-# def test_register_validate_input(client, username, password, email, message):
-#     response = client.post(
-#         "/auth/v1/register", data={"username": username, "password": password, "email": email}
-#     )
-#     assert message in response.data
+@pytest.mark.parametrize(
+    ("username", "password", "email", "message"),
+    (
+        ("", "", "", b"Username is required."),
+        ("a", "", "", b"Password is required."),
+        ("a", "a", "", b"Email is required."),
+        ("test", "bestPasswordEver", "test.test@gmail.com", b"Successfully registered"),
+        # ("test", "bestPasswordEver", "ryan.test@gmail.com", b"Already registered"),
+    ),
+)
+def test_register_validate_input(client, username, password, email, message):
+    response = client.post(
+        "app/v1/auth/register", json={"username": username, "password": password, "email": email}
+    )
+    assert message in response.data
 
 
 # def test_login(client, auth):
-#     # test that viewing the page renders without template errors
-#     assert client.get("/auth/v1/login").status_code == 200
-
 #     # test that successful login redirects to the index page
-#     response = auth.login()
-#     assert response.headers["Location"] == "http://localhost/"
+#     response = auth.login("test","bestPasswordEver","test.test@gmail.com")
 
 #     # login request set the user_id in the session
 #     # check that the user is loaded from the session
 #     with client:
-#         client.get("/")
-#         assert session["user_id"] == 1
-#         assert g.user["username"] == "test"
+#         ping_response = client.get("app/v1/auth/ping")
+#         assert ping_response.status_code == 200
+        
 
 
 # @pytest.mark.parametrize(

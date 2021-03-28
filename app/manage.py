@@ -11,13 +11,12 @@ migrate = Migrate(app, db)
 
 manager.add_command('db', MigrateCommand)
 
-
 @manager.command
 def recreate_db():
     db.drop_all()
     db.create_all()
     db.session.commit()
-
+    print('Database dropped and recreated.')
 
 @manager.command
 def seed_db():
@@ -28,6 +27,7 @@ def seed_db():
               email='admin@gmail.com',
               admin=True))
     db.session.commit()
+    print('Admin user added.')
 
 
 if __name__ == '__main__':

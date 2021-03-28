@@ -1,14 +1,14 @@
 import pytest
 import os
-
 from project import create_app
 from project.extensions import db
+# from flask_sqlalchemy import SQLAlchemy
 
 @pytest.fixture
 def app():
     """Create and configure a new app instance for each test."""
     # create the app with common test config
-    app = create_app({"TESTING": True})
+    app = create_app()
     # create the database and load test data
     with app.app_context():
         db.drop_all()
@@ -33,13 +33,18 @@ class AuthActions:
     def __init__(self, client):
         self._client = client
 
+    def register(self, username="test", password="test", email="test"):
+        return self._client.post(
+            "app/v1/auth/register", data={"username": username,"email": email,"password": password}
+        )
+
     def login(self, username="test", password="test", email="test"):
         return self._client.post(
-            "/auth/v1/login", data={"username": username,"email": email,"password": password}
+            "app/v1/auth/login", data={"username": username,"email": email,"password": password}
         )
 
     def logout(self):
-        return self._client.get("/auth/v1/logout")
+        return self._client.get("app/v1/auth/logout")
 
 
 @pytest.fixture

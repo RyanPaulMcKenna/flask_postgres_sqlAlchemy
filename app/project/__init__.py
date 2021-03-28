@@ -6,24 +6,18 @@ from flask_restx import Api
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 def create_app(config=None):
-    config_name = ''
-    if config == None:
-       config_name = 'APP_SETTINGS'
-    else:
-        config_name = 'APP_TEST_SETTINGS'
-    
     app = Flask(__name__)
     app.wsgi_app = ProxyFix(app.wsgi_app)
 
     api = Api(app)
 
-    env_flask_config_name = os.getenv(config_name)
-    app.config.from_object(env_flask_config_name)
+    env_flask_config = os.getenv('APP_SETTINGS')
+    app.config.from_object(env_flask_config)
 
     from . import extensions
     extensions.init_app(app)
 
-    from project.models import Station
+    from project.modules.users.models import Users
 
     from . import modules
     modules.initiate_app(app)
@@ -32,7 +26,7 @@ def create_app(config=None):
     def main():
         response_object = {
             'status': 'success',
-            'users': [station.json() for station in Station.query.all()]
+            'users': [user.to_json() for user in Users.query.all()]
         }
         return response_object, HTTPStatus.OK
 

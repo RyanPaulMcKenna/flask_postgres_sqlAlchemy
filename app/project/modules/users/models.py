@@ -3,14 +3,16 @@ import logging
 
 import jwt
 from flask import current_app
-from sqlalchemy_utils import Timestamp
-
 from project.extensions import bcrypt, db
 
 log = logging.getLogger(__name__)
 
+class TimestampMixin(object):
+    created = db.Column(
+        db.DateTime, nullable=False, default=datetime.datetime.utcnow)
+    updated = db.Column(db.DateTime, onupdate=datetime.datetime.utcnow)
 
-class Users(db.Model, Timestamp):
+class Users(db.Model,TimestampMixin):
 
     __tablename__ = "users"
 
