@@ -4,6 +4,8 @@ from http import HTTPStatus
 from flask import Blueprint, jsonify, request
 from flask_restx import Api, Resource
 
+from project.extensions import db
+
 from project.modules.utils import authenticate_restful, is_admin
 
 from .models import Users as UsersModel
@@ -60,9 +62,15 @@ class UsersList(Resource):
         if not post_data:
             return response_object, HTTPStatus.BAD_REQUEST
 
-        username = post_data.get('username')
-        email = post_data.get('email')
         try:
+            username = post_data.get('username')
+            email = post_data.get('email')
+            password = post_data.get('password')        
+
+            new_user = Users(username=username, email=email, password=password)
+            db.session.add(new_user)
+            db.session.commit()
+            
             response_object = {
                 'status': 'success',
                 'message': f'{email} was added!'
@@ -71,27 +79,27 @@ class UsersList(Resource):
         except Exception as e:
             log.error(e)
 
-    @authenticate_restful
-    def put(self, user):
-        post_data = request.get_json()
-        response_object = {'status': 'fail', 'message': 'Invalid payload'}
-        if not is_admin(resp):
-            response_object['message'] = \
-                "You do not have permission to do that."
-            return response_object, HTTPStatus.UNAUTHORIZED
-        if not post_data:
-            return response_object, HTTPStatus.BAD_REQUEST
+    # @authenticate_restful
+    # def put(self, user):
+    #     post_data = request.get_json()
+    #     response_object = {'status': 'fail', 'message': 'Invalid payload'}
+    #     if not is_admin(resp):
+    #         response_object['message'] = \
+    #             "You do not have permission to do that."
+    #         return response_object, HTTPStatus.UNAUTHORIZED
+    #     if not post_data:
+    #         return response_object, HTTPStatus.BAD_REQUEST
 
-        username = post_data.get('username')
-        email = post_data.get('email')
-        try:
-            response_object = {
-                'status': 'success',
-                'message': f'{email} was added!'
-            }
-            return response_object, HTTPStatus.CREATED
-        except Exception as e:
-            log.error(e)
+    #     username = post_data.get('username')
+    #     email = post_data.get('email')
+    #     try:
+    #         response_object = {
+    #             'status': 'success',
+    #             'message': f'{email} was added!'
+    #         }
+    #         return response_object, HTTPStatus.CREATED
+    #     except Exception as e:
+    #         log.error(e)
 
 
 users_api.add_resource(Users, '/app/v1/users/<token>')

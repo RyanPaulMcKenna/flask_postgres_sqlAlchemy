@@ -1,7 +1,4 @@
 import pytest
-from flask import g
-from flask import session
-import json
 from project.extensions import db
 from project.modules.users.models import Users
 
