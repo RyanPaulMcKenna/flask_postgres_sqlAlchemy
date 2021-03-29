@@ -1,7 +1,7 @@
 import logging
 from http import HTTPStatus
 
-from flask import Blueprint, request
+from flask import Blueprint, jsonify, request
 from flask_restx import Api, Resource
 
 from project.modules.utils import authenticate_restful, is_admin
@@ -11,7 +11,7 @@ from .models import Users as UsersModel
 log = logging.getLogger(__name__)
 
 users_blueprint = Blueprint('users', __name__)
-api = Api(users_blueprint)
+users_api = Api(users_blueprint)
 
 
 class Users(Resource):
@@ -94,5 +94,5 @@ class UsersList(Resource):
             log.error(e)
 
 
-api.add_resource(Users, '/app/v1/users/<token>')
-api.add_resource(UsersList, '/app/v1/users')
+users_api.add_resource(Users, '/app/v1/users/<token>')
+users_api.add_resource(UsersList, '/app/v1/users')

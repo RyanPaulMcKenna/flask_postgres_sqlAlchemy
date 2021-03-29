@@ -1,12 +1,11 @@
 import pytest
 from flask import g
 from flask import session
-
+import json
 from project.extensions import db
 from project.modules.users.models import Users
 
 def test_register(client, app):
-    # test that successful registration redirects to the login page
     response = client.post("/app/v1/auth/register", json={"username": "ryan","email":"ryan.test@gmail.com", "password": "bestPasswordEver"})
     
     # assert "http://localhost/app/v1/auth/login" == response.headers["Location"]
@@ -33,30 +32,36 @@ def test_register_validate_input(client, username, password, email, message):
     assert message in response.data
 
 
-# def test_login(client, auth):
-#     # test that successful login redirects to the index page
-#     response = auth.login("test","bestPasswordEver","test.test@gmail.com")
+def test_login(client,app, auth):
+    register_response = client.post("/app/v1/auth/register", json={"username": "Albert","email":"albert.einstein@gmail.com", "password": "bestPasswordEver"})
+    login_response = auth.login("Albert", "bestPasswordEver")
+    
 
-#     # login request set the user_id in the session
-#     # check that the user is loaded from the session
-#     with client:
-#         ping_response = client.get("app/v1/auth/ping")
-#         assert ping_response.status_code == 200
+    with app.app_context():
+        from project.modules.users.models import Users
+        user = Users.query.filter_by(username="Albert").first()
+        # test that the user was inserted into the database
+        assert user.username == "Albert"
+        assert register_response.status_code == 200
+        assert login_response.status_code == 200
+
         
 
+@pytest.mark.parametrize(
+    ("username", "password", "message"),
+    (("a", "test", b"Username or password is invalid."), ("test", "a", b"Username or password is invalid.")),
+)
+def test_login_validate_input(auth, username, password, message):
+    response = auth.login(username, password)
+    assert message in response.data
 
-# @pytest.mark.parametrize(
-#     ("username", "password", "message"),
-#     (("a", "test", b"Incorrect username."), ("test", "a", b"Incorrect password.")),
-# )
-# def test_login_validate_input(auth, username, password, message):
-#     response = auth.login(username, password)
-#     assert message in response.data
 
+def test_logout(client, auth):
+    register_response = client.post("/app/v1/auth/register", json={"username": "Albert","email":"albert.einstein@gmail.com", "password": "bestPasswordEver"})
+    login_response = auth.login("Albert", "bestPasswordEver")
 
-# def test_logout(client, auth):
-#     auth.login()
-
-#     with client:
-#         auth.logout()
-#         assert "user_id" not in session
+    with client:
+        login_json = login_response.get_json()
+        auth_token = login_json["auth_token"]
+        logout_response = auth.logout(auth_token)
+        assert logout_response.status_code == 200

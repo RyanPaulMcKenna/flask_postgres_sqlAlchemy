@@ -35,16 +35,16 @@ class AuthActions:
 
     def register(self, username="test", password="test", email="test"):
         return self._client.post(
-            "app/v1/auth/register", data={"username": username,"email": email,"password": password}
+            "app/v1/auth/register", json={"username": username,"email": email,"password": password}
         )
 
     def login(self, username="test", password="test", email="test"):
         return self._client.post(
-            "app/v1/auth/login", data={"username": username,"email": email,"password": password}
+            "app/v1/auth/login", json={"username": username, "password": password}
         )
 
-    def logout(self):
-        return self._client.get("app/v1/auth/logout")
+    def logout(self,authorization):
+        return self._client.get("app/v1/auth/logout", headers={"Authorization": "Basic " + authorization})
 
 
 @pytest.fixture

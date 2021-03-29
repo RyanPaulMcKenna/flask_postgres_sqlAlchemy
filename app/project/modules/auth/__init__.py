@@ -9,17 +9,17 @@ from project.modules.users.models import Users
 from project.modules.utils import authenticate
 
 log = logging.getLogger(__name__)
-api = Blueprint('auth', __name__)
+auth_api = Blueprint('auth', __name__)
 
 
-@api.route('/app/v1/auth/ping', methods=['GET'])
+@auth_api.route('/app/v1/auth/ping', methods=['GET'])
 @authenticate
 def check_token(resp):
     response_object = {'status': 'success', 'message': 'Token valid'}
     return jsonify(response_object), HTTPStatus.OK
 
 
-@api.route('/app/v1/auth/status', methods=['GET'])
+@auth_api.route('/app/v1/auth/status', methods=['GET'])
 @authenticate
 def get_user_status(resp):
     user = Users.query.filter_by(id=resp.id).first()
@@ -31,7 +31,7 @@ def get_user_status(resp):
     return jsonify(response_object), 200
 
 
-@api.route('/app/v1/auth/login', methods=['POST'])
+@auth_api.route('/app/v1/auth/login', methods=['POST'])
 def login_user():
     post_data = request.get_json()
     response_object = {'status': 'fail', 'message': 'Invalid payload'}
@@ -50,10 +50,10 @@ def login_user():
                     'message': 'Successfully logged in',
                     'auth_token': auth_token.decode()
                 }
-                # return jsonify(response_object), HTTPStatus.OK
-                return redirect(url_for('check_token')), HTTPStatus.OK
+                return jsonify(response_object), HTTPStatus.OK
+                # return redirect(url_for('check_token')), HTTPStatus.OK
         else:
-            response_object['message'] = 'User does not exist'
+            response_object['message'] = 'Username or password is invalid.'
             return jsonify(response_object), HTTPStatus.NOT_FOUND
     except Exception as e:
         log.error(e)
@@ -61,7 +61,7 @@ def login_user():
         return jsonify(response_object), HTTPStatus.INTERNAL_SERVER_ERROR
 
 
-@api.route('/app/v1/auth/logout', methods=['GET'])
+@auth_api.route('/app/v1/auth/logout', methods=['GET'])
 @authenticate
 def logout_user(resp):
     response_object = {
@@ -71,7 +71,7 @@ def logout_user(resp):
     return jsonify(response_object), HTTPStatus.OK
 
 
-@api.route('/app/v1/auth/register', methods=['POST'])
+@auth_api.route('/app/v1/auth/register', methods=['POST'])
 def register_user():
     post_data = request.get_json()
     response_object = {'status': 'fail', 'message': 'Invalid payload'}
@@ -91,8 +91,6 @@ def register_user():
     if email == "":
         response_object['message'] = "Email is required."
         return jsonify(response_object), 412
-
-
 
     try:
         user = Users.query.filter(

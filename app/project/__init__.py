@@ -17,7 +17,7 @@ def create_app(config=None):
     from . import extensions
     extensions.init_app(app)
 
-    from project.modules.users.models import Users
+    from project.modules.files.models import Files
 
     from . import modules
     modules.initiate_app(app)
@@ -26,7 +26,7 @@ def create_app(config=None):
     def main():
         response_object = {
             'status': 'success',
-            'users': [user.to_json() for user in Users.query.all()]
+            'files': [file.to_json() for file in Files.query.all()]
         }
         return response_object, HTTPStatus.OK
 
