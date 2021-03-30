@@ -79,27 +79,36 @@ class UsersList(Resource):
         except Exception as e:
             log.error(e)
 
-    # @authenticate_restful
-    # def put(self, user):
-    #     post_data = request.get_json()
-    #     response_object = {'status': 'fail', 'message': 'Invalid payload'}
-    #     if not is_admin(resp):
-    #         response_object['message'] = \
-    #             "You do not have permission to do that."
-    #         return response_object, HTTPStatus.UNAUTHORIZED
-    #     if not post_data:
-    #         return response_object, HTTPStatus.BAD_REQUEST
+    @authenticate_restful
+    def put(self, resp):
+        post_data = request.get_json()
+        response_object = {'status': 'fail', 'message': 'Invalid payload'}
+        if not is_admin(resp):
+            response_object['message'] = \
+                "You do not have permission to do that."
+            return response_object, HTTPStatus.UNAUTHORIZED
+        if not post_data:
+            return response_object, HTTPStatus.BAD_REQUEST
 
-    #     username = post_data.get('username')
-    #     email = post_data.get('email')
-    #     try:
-    #         response_object = {
-    #             'status': 'success',
-    #             'message': f'{email} was added!'
-    #         }
-    #         return response_object, HTTPStatus.CREATED
-    #     except Exception as e:
-    #         log.error(e)
+        id = post_data.get('id')
+        username = post_data.get('username')
+        email = post_data.get('email')
+        password = post_data.get('password')
+
+        user_to_update = UsersModel.query.get(int(id))
+        user_to_update.username  = username
+        user_to_update.username  = email
+        user_to_update.username  = password
+        db.session.commit()
+
+        try:
+            response_object = {
+                'status': 'success',
+                'message': f'{email} was added!'
+            }
+            return response_object, HTTPStatus.CREATED
+        except Exception as e:
+            log.error(e)
 
 
 users_api.add_resource(Users, '/app/v1/users/<token>')
