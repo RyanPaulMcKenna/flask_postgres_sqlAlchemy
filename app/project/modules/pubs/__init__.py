@@ -50,7 +50,6 @@ class PubsList(Resource):
 
     # @authenticate_restful
     def post(self):
-
         post_data = request.get_json()
 
         pub_name = post_data['name']
@@ -79,6 +78,46 @@ class PubsList(Resource):
             return response_object, HTTPStatus.CREATED
         except Exception as e:
             log.error(e)
+
+    # @authenticate_restful
+    def put(self):
+        post_data = request.get_json()
+
+        pub_id = post_data['id']
+        pub_name = post_data['name']
+        pub_author = post_data['author']
+        pub_text = post_data['text']
+
+        response_object = {'status': 'fail', 'message': 'Invalid payload'}
+        
+        # if not is_admin(resp.id):
+        #     response_object['message'] = \
+        #         "You do not have permission to do that."
+        #     return response_object, HTTPStatus.UNAUTHORIZED
+
+        old_pub = PubModel.query.filter_by(id=int(pub_id)).first()
+        
+        if not old_pub or not pub_name or not pub_author or not pub_text:
+            return response_object, HTTPStatus.BAD_REQUEST
+
+        try:
+            
+            old_pub.name = pub_name
+            old_pub.author = pub_author
+            old_pub.text = pub_text
+
+            db.session.commit()
+
+            response_object = {
+                'status': 'success',
+                'message': 'publication was added.'
+            }
+            return response_object, HTTPStatus.CREATED
+        except Exception as e:
+            log.error(e)
+
+    
+
 
 
 pubs_api.add_resource(Pubs, '/app/v1/pubs/<token>')
