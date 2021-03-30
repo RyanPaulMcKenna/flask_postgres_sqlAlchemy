@@ -11,6 +11,12 @@ Run 'python manage.py db upgrade'
 Run 'python manage.py recreate_db'
 Run 'python manage.py seed_db'
 
+
+For test coverage report documentation
+Run 'coverage run -m pytest'
+Run 'coverage report'
+Run 'coverage html'
+
 Now the front end application will be served at localhost:8080/
 and the back end application will be served at localhost:8080/app
 
