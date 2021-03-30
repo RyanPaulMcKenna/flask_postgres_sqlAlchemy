@@ -9,26 +9,28 @@ class TimestampMixin(object):
         db.DateTime, nullable=False, default=datetime.datetime.utcnow)
     updated = db.Column(db.DateTime, onupdate=datetime.datetime.utcnow)
 
-class Files(db.Model,TimestampMixin):
+class Pubs(db.Model,TimestampMixin):
 
-    __tablename__ = "files"
+    __tablename__ = "pubs"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(128), nullable=False, unique=True)
-    extension = db.Column(db.String(10))
-    data = db.Column(db.LargeBinary)
+    author = db.Column(db.String(128), db.ForeignKey('users.username'))
+    text = db.Column(db.Text(), nullable=False)
+
 
     def __init__(self,
                  name: str,
-                 extension: str,
-                 data: bytes):
+                 text: str,
+                 author: str):
         self.name = name
-        self.extension = extension
-        self.data = data
+        self.text = text
+        self.author = author
 
     def to_json(self):
         return {
             'id': self.id,
             'name': self.name,
-            'extension': self.extension,
+            'author': self.author,
+            'text': self.text
         }

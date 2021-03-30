@@ -4,6 +4,7 @@ from project import create_app
 from project.extensions import db
 from project.modules.users.models import Users
 
+
 app = create_app()
 
 manager = Manager(app)

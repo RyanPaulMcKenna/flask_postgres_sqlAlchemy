@@ -11,6 +11,7 @@ class BaseConfig:
 
 
 class DevelopmentConfig(BaseConfig):
+    FLASK_ADMIN_SWATCH = 'cerulean'
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
     BCRYPT_LOG_ROUNDS = 4
