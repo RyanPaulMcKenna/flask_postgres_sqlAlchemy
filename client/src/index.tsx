@@ -16,7 +16,7 @@ export interface IAppService {
 
 export class AppService implements IAppService {
   public async getData() {
-    return fetch('/app', {
+    return fetch('http://localhost:5000/app', {
       method: 'GET',
       headers: {
         Accept: 'application/json',
